@@ -1,0 +1,27 @@
+PLINK v2.0.0-a.6.12LM AVX2 Intel (20 Apr 2025)
+Options in effect:
+  --geno-counts
+  --keep example_data/party2/sample_keep.txt
+  --out example_data/party2/chr3
+  --pfile example_data/party2/geno/chr3
+  --threads 1
+
+Hostname: mercury
+Working directory: /home/hs2286/sfgwas-lmm
+Start time: Tue May 20 09:10:52 2025
+
+Random number seed: 1747746652
+63998 MiB RAM detected, ~60536 available; reserving 31999 MiB for main
+workspace.
+Using 1 compute thread.
+1000 samples (1000 females, 0 males; 1000 founders) loaded from
+example_data/party2/geno/chr3.psam.
+4546 variants loaded from example_data/party2/geno/chr3.pvar.
+1 binary phenotype loaded (500 cases, 500 controls).
+--keep: 100 samples remaining.
+100 samples (100 females, 0 males; 100 founders) remaining after main filters.
+100 cases and 0 controls remaining after main filters.
+Calculating allele frequencies... done.
+--geno-counts: Genotype counts written to example_data/party2/chr3.gcount .
+
+End time: Tue May 20 09:10:52 2025
