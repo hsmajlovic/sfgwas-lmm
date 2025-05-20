@@ -25,8 +25,8 @@ counts = [
     ]
     for i in range(nparties)
 ]
-nrows = [i[0] for i in counts]
-ncols = [i[1] for i in counts]
+nrows = [p[0] for p in counts]
+ncols = [p[1] for p in counts]
 # nrow = counts[0]
 # ncol = counts[1]
 nfolds = int(sys.argv[3])
@@ -164,7 +164,7 @@ for p in range(nparties):
 
 block2chr = []
 
-colblockinds = np.zeros(ncolblock + 1, dtype=np.int)
+colblockinds = np.zeros(ncolblock + 1, dtype=int)
 ind = 1
 for ch in range(numchr):
     n2 = colchrinds[ch + 1] - colchrinds[ch]
@@ -204,7 +204,7 @@ for p in range(nparties):
 
 infiles = [
     open(
-        os.path.join(input_dir, "party" + str(i + 1) + "/combined.bin"),
+        os.path.join(input_dir, "party" + str(i + 1) + "/combined_filtered.bin"),
         'rb',
     )
     for i in range(nparties)

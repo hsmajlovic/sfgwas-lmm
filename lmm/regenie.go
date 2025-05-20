@@ -85,6 +85,7 @@ func (reg *REGENIE) Level0() {
 func (reg *REGENIE) GetThreadParallelMPC(offset, perBlock int) *mpc.ParallelMPC {
 	mpcObjs := reg.general.GetParallelMPC()
 	threadMpcObjs := make(mpc.ParallelMPC, perBlock)
+	log.LLvl1("GetThreadParallelMPC", offset, perBlock, len(threadMpcObjs), len(mpcObjs))
 	for p := 0; p < perBlock; p++ {
 		threadMpcObjs[p] = mpcObjs[offset*perBlock+p]
 	}
@@ -1275,10 +1276,13 @@ func (reg *REGENIE) PrecomputeVals(step1 bool) {
 		for i := 0; i < len(genoBlockReplace); i++ {
 			genoBlockReplace[i] = make([]float64, blockSizes[i])
 		}
-
+		
+		log.LLvl1("reg.B", reg.B)
 		idx := 0
 		for i := 0; i < reg.B; i++ {
+			log.LLvl1("--i", i, len(genoBlockReplace[i]), len(meanDosFloat))
 			for j := 0; j < len(genoBlockReplace[i]); j++ {
+				log.LLvl1("----j", j, idx)
 				genoBlockReplace[i][j] = meanDosFloat[idx]
 				idx += 1
 			}

@@ -19,7 +19,7 @@ os.system(f"mkdir -p {out_dir}")
 all_fname = os.path.join(out_dir, "all.gcount")
 all_file = open(all_fname, "w")
 
-for chr in range(1, 23):
+for chr in range(1, 4):
     pgen_prefix = pgen_filename_template % chr
     out_prefix = os.path.join(out_dir, f"chr{chr}")
 

@@ -6,9 +6,9 @@ hub_party_id = 1
 # Defined in ckks/params.go in Lattigo library
 ckks_params = "PN14QP438"
 
-mpc_num_threads = 126
-mpc_objs_per_block = 6
-mpc_num_main_threads = 21
+mpc_num_threads = 9
+mpc_objs_per_block = 3
+mpc_num_main_threads = 3
 
 #mpc_num_threads = 6
 #mpc_objs_per_block = 6
@@ -23,14 +23,14 @@ mpc_frac_bits = 40
 calc_g_capacity = 6
 
 ## Data dimensions
-num_inds = [0, 1000, 1000]
-num_snps = 100000
+num_inds = [0, 100, 100]
+num_snps = 13638
 num_covs = 5
-geno_num_blocks = 22
+geno_num_blocks = 3
 geno_num_folds = 5
 
-step_2_num_snps = 100000
-step_2_geno_num_blocks = 22
+step_2_num_snps = 13638
+step_2_geno_num_blocks = 3
 
 ## Networking parameters
 # Party with a smaller ID listens for connection

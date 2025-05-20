@@ -14,6 +14,8 @@ import (
 	"github.com/ldsec/lattigo/v2/ckks"
 
 	"gonum.org/v1/gonum/mat"
+
+	"go.dedis.ch/onet/v3/log"
 )
 
 type matmulPlainInnerFn func(*crypto.CryptoParams, crypto.CipherVector, crypto.PlainMatrix, int) crypto.CipherVector
@@ -791,11 +793,12 @@ func MatTSClearSimple(gfs *GenoFileStream, B *mat.Dense, invStdDev []float64) *m
 
 func MatTClear(gfs *GenoFileStream, B *mat.Dense) *mat.Dense {
 	gfs.Reset()
-	_, c := B.Dims()
+	aa, c := B.Dims()
 	numRows := int(gfs.NumRowsToKeep())
 	numCols := int(gfs.NumCols())
-	blockSize := 100 // need to set
-	if gfs.numRows < 100 {
+	blockSize := 20 // need to set
+	log.LLvl1("numRows", numRows, "numCols", numCols, "B dims", aa, c)
+	if gfs.numRows < 20 {
 		panic("num rows less than blocksize")
 	}
 	blocks := ((numRows - 1) / blockSize) + 1
