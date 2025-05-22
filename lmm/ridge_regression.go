@@ -155,6 +155,9 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 	if pid > 0 {
 		if initialX == nil {
 			r = crypto.CSub(cps, b, x)
+			
+			// Log r
+
 			p = crypto.CopyEncryptedVector(r)
 		} else {
 			var initP crypto.CipherVector
@@ -162,12 +165,19 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 			initP = LazyMult(initialX)
 			log.LLvl1(time.Now().Format(time.StampMilli), "init P")
 			matPrint(cipherToNetworkMat(cps, mpcObj, crypto.CipherMatrix{initP}, b_len).T())
+			
+			// Log x
+			// Log initP
+
 			if useDummyBoot {
 				initP = mpcObj.Network.DummyBootstrapVecAll(cps, initP)
 			} else {
 				initP = mpcObjs.GetNetworks().BootstrapVecAll(cps, initP)
 			}
 			r = crypto.CSub(cps, b, initP)
+
+			// Log r
+
 			p = crypto.CopyEncryptedVector(r)
 		}
 	}
@@ -186,21 +196,35 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 			Ap = LazyMult(p)
 		}
 		Ap_scaled := crypto.CMultConst(cps, Ap, 1.0/math.Sqrt(float64(b_len)), false)
+
+		// Log Ap_scaled
+
 		numSS := CipherVectorInnerProdSS(cps, mpcObj, r, b_len)
+
+		// Log numSS
+
 		denomSS := CipherVectorInnerProd2SS(cps, mpcObj, p, Ap_scaled, b_len)
+
+		// Log denomSS
 
 		var alpha *ckks.Ciphertext
 		sqrtSS, sqrtInvSS := mpcObj.SqrtAndSqrtInverse(mpc_core.RVec{numSS, denomSS})
 		fracSS := mpcObj.SSMultElemVec(mpc_core.RVec{sqrtSS[0]}, mpc_core.RVec{sqrtInvSS[1]})
 		fracSS = mpcObj.TruncVec(fracSS, mpcObj.GetDataBits(), mpcObj.GetFracBits())
 
+		// Log fracSS
+
 		fracSS = mpcObj.SSMultElemVec(fracSS, fracSS)
 		fracSS = mpcObj.TruncVec(fracSS, mpcObj.GetDataBits(), mpcObj.GetFracBits())
+
+		// Log fracSS
 
 		if pid > 0 {
 			fracSS.MulScalar(mpcObj.GetRType().FromFloat64(1.0/math.Sqrt(float64(b_len)), mpcObj.GetFracBits()))
 		}
 		fracSS = mpcObj.TruncVec(fracSS, mpcObj.GetDataBits(), mpcObj.GetFracBits())
+
+		// Log fracSS
 
 		alpha = mpcObj.SStoCiphertext(cps, fracSS)
 		alpha = crypto.Rebalance(cps, alpha)
@@ -210,6 +234,10 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 		if pid > 0 {
 			scaledP := crypto.CMultScalar(cps, p, alpha)
 			newX = crypto.CAdd(cps, x, scaledP)
+
+			// Log scaledP
+			// Log newX
+
 			if useDummyBoot {
 				newX = mpcObj.Network.DummyBootstrapVecAll(cps, newX)
 			} else {
@@ -222,6 +250,10 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 				scaledAp := crypto.CMultScalar(cps, Ap, alpha)
 				newR = crypto.CSub(cps, r, scaledAp)
 			}
+			
+			// Log Ax
+			// Log scaledAp
+			// Log newR
 
 			if useDummyBoot {
 				newR = mpcObj.Network.DummyBootstrapVecAll(cps, newR)
@@ -232,6 +264,9 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 
 		newRDotSS := CipherVectorInnerProdSS(cps, mpcObj, newR, b_len)
 		oldRDotSS := CipherVectorInnerProdSS(cps, mpcObj, r, b_len)
+
+		// Log newRDotSS
+		// Log oldRDotSS
 
 		if pid > 0 {
 			r = newR
@@ -289,11 +324,18 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 		var beta *ckks.Ciphertext
 		sqrtSSBeta, sqrtInvSSBeta := mpcObj.SqrtAndSqrtInverse(mpc_core.RVec{newRDotSS, oldRDotSS})
 
+		// Log sqrtSSBeta
+		// Log sqrtInvSSBeta
+
 		fracSSBeta := mpcObj.SSMultElemVec(mpc_core.RVec{sqrtSSBeta[0]}, mpc_core.RVec{sqrtInvSSBeta[1]})
 		fracSSBeta = mpcObj.TruncVec(fracSSBeta, mpcObj.GetDataBits(), mpcObj.GetFracBits())
 
+		// Log fracSSBeta
+
 		fracSSBeta = mpcObj.SSMultElemVec(fracSSBeta, fracSSBeta)
 		fracSSBeta = mpcObj.TruncVec(fracSSBeta, mpcObj.GetDataBits(), mpcObj.GetFracBits())
+
+		// Log fracSSBeta
 
 		beta = mpcObj.SStoCiphertext(cps, fracSSBeta)
 		beta = crypto.Rebalance(cps, beta)
@@ -302,6 +344,9 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 			scaledBeta := crypto.CMultScalar(cps, p, beta)
 			p = crypto.CAdd(cps, newR, scaledBeta)
 		}
+
+		// Log fracSSBeta
+		// Log p
 	}
 	return x, k, false
 }
