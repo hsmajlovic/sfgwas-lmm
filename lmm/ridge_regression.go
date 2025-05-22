@@ -241,7 +241,7 @@ func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, 
 		// Check if time to peek
 		signal := CONTINUE
 
-		if k > 0 && k%RESPEEK == 0 {
+		if k > 0 {
 			log.LLvl1("Initiating error peek, k", k, "RESPEEK", RESPEEK)
 
 			//decrypt and break if residual is low enough

@@ -216,7 +216,6 @@ func (cp *CryptoParams) GetThread(thread int) *CryptoParams {
 
 	evaluators := make([]ckks.Evaluator, 1)
 	evaluatorIds := make(chan int, 1)
-	log.LLvl1("GetThread cp evaluators", len(cp.evaluators), "thread", thread)
 	evaluators[0] = cp.evaluators[thread]
 	evaluatorIds <- 0
 
